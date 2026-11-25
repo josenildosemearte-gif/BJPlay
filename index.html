@@ -738,26 +738,87 @@ body {
     </div>
 </div>
 
+<style>
+/* ---------- TELA DO FILME ---------- */
+#detalhe{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9000;
+  background:linear-gradient(90deg,#000 30%,#1c0004);color:#fff;font-family:Arial,sans-serif}
+#detalhe .cont{display:flex;align-items:center;height:100%;padding:0 7%;box-sizing:border-box}
+#det-capa{height:78vh;width:auto;flex:none;border:2px solid #444;border-radius:4px}
+#det-txt{margin-left:5%;max-width:55%}
+#det-tit{font-size:44px;margin:0 0 14px}
+#det-meta{font-size:22px;color:#ccc;line-height:1.4;margin:0 0 18px}
+#det-sin{font-size:22px;line-height:1.5;margin:0 0 32px;max-height:30vh;overflow:hidden}
+.det-btn{display:block;width:380px;margin:0 0 16px;padding:18px 24px;font-size:26px;font-weight:bold;
+  background:#333;color:#fff;border:3px solid transparent;border-radius:6px;cursor:pointer;
+  outline:none;text-align:left;font-family:Arial,sans-serif}
+.det-btn:focus,.det-btn:hover{background:#e50914;border-color:#fff}
+
+/* ---------- PLAYER ---------- */
+#player{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;outline:none}
+#player #yt{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+#player iframe{pointer-events:none}
+#pl-topo,#pl-base{position:absolute;left:0;right:0;padding:28px 48px;color:#fff;font-family:Arial,sans-serif;
+  transition:opacity .3s;box-sizing:border-box}
+#pl-topo{top:0;font-size:30px;font-weight:bold;background:linear-gradient(rgba(0,0,0,.85),transparent)}
+#pl-base{bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.9));font-size:20px}
+#pl-barra{height:8px;background:rgba(255,255,255,.3);border-radius:4px;margin-bottom:14px}
+#pl-prog{height:100%;width:0;background:#e50914;border-radius:4px}
+#pl-info{display:flex;justify-content:space-between;color:#ccc}
+#pl-msg{display:none;position:absolute;top:50%;left:10%;right:10%;transform:translateY(-50%);text-align:center;
+  color:#fff;font:28px Arial,sans-serif;line-height:1.4}
+#player.oculto #pl-topo,#player.oculto #pl-base{opacity:0}
+#player.oculto{cursor:none}
+</style>
+
+<div id="detalhe">
+    <div class="cont">
+        <img id="det-capa" alt="">
+        <div id="det-txt">
+            <h1 id="det-tit"></h1>
+            <p id="det-meta"></p>
+            <p id="det-sin"></p>
+            <button type="button" class="det-btn" id="btn-assistir">▶&nbsp; ASSISTIR</button>
+            <button type="button" class="det-btn" id="btn-trailer">🎬&nbsp; VER TRAILER</button>
+            <button type="button" class="det-btn" id="btn-voltar">◄&nbsp; VOLTAR</button>
+        </div>
+    </div>
+</div>
+
+<div id="player" tabindex="0">
+    <div id="yt"></div>
+    <div id="pl-topo"></div>
+    <div id="pl-msg"></div>
+    <div id="pl-base">
+        <div id="pl-barra"><div id="pl-prog"></div></div>
+        <div id="pl-info"><span id="pl-tempo">0:00 / 0:00</span>
+        <span>OK: pausar &nbsp;|&nbsp; ◄ ► : 10s &nbsp;|&nbsp; ▲ ▼ : episódio &nbsp;|&nbsp; Voltar: sair</span></div>
+    </div>
+</div>
+
 <script>
 (function () {
 
     /* ------------------------------------------------------------
-       IDs DO YOUTUBE
-       Chave = final do link da página atual (a parte depois da última "/").
-       Valor = ID do vídeo (ex.: youtu.be/AbC123xyz  ->  'AbC123xyz')
-               ou ID de PLAYLIST (começa com PL), para as webséries.
-       Deixe '' se ainda não tiver: nesse caso abre o link antigo.
+       CATÁLOGO
+       Chave = final do link da capa (parte depois da última "/").
+       Valor pode ser:
+         'ID_DO_VIDEO'                              (só o filme)
+         { filme:'ID', trailer:'ID', sinopse:'...' } (completo; tudo opcional)
+       Para webséries, use o ID da PLAYLIST (começa com PL) em "filme".
+       Sem ID nenhum: a capa abre o link antigo do Google Sites.
+       Exemplo completo:
+         '100-metros': { filme:'71j8Qyslh2I', trailer:'ID_DO_TRAILER', sinopse:'Texto...' },
     ------------------------------------------------------------ */
-    var IDS_YOUTUBE = {
+    var CATALOGO = {
         // NOSSOS FILMES
         '100-metros': '71j8Qyslh2I',
-        'bjplay-a-garotinha': 'YgqBZcHWGaQ?si=vyDT9l0Tn8frG1sk',
+        'bjplay-a-garotinha': 'YgqBZcHWGaQ',
         'dendi': 'tAla42kqLFo',
         'bjplay-maluvidos': 'ECpl0aZyRPg',
         'é-o-tipo-da-coisa': 'Dr_dMwrsXks',
         'webnovela': 'PLjA4Cg9WE4WbBE83ZKd6YNeCVok2eJpMO',
-        'botija': 's_jJ1OWAhow?si=__AoYij6qgPl_hoe',
-        'rio-siqueira': 'https://youtu.be/7N4crp_vNyY',
+        'botija': 's_jJ1OWAhow',
+        'rio-siqueira': '7N4crp_vNyY',
         'mulheres': 'TU8uuWJ1w8A',
         'o-inferno-é-aqui': '',
         // A LEI DA ATRAÇÃO
@@ -771,7 +832,7 @@ body {
         'a-lei-da-atração-capitulo-8': 'ulUtdVX2-LQ',
         'a-lei-da-atração-capitulo-9': 'yqv8HadFPx4',
         'a-lei-da-atração-capitulo-10': '1wMenReix4A',
-        // HISTÓRIAS ASSOMBROSAS (use o ID da playlist com os 8 episódios)
+        // HISTÓRIAS ASSOMBROSAS
         'a-marca-do-diabo': 'ZCqXnNIHj_A',
         'o-hospital': '3Yn64O_ffjY',
         'zé-padeiro': 'vIlvxzk1bRk',
@@ -798,36 +859,61 @@ body {
 
     var filmes = Array.prototype.slice.call(document.querySelectorAll('.filme'));
     var player = document.getElementById('player');
-    var elTopo = document.getElementById('pl-topo');
-    var elMsg = document.getElementById('pl-msg');
-    var elProg = document.getElementById('pl-prog');
-    var elTempo = document.getElementById('pl-tempo');
+    var detalhe = document.getElementById('detalhe');
+    var elTopo = document.getElementById('pl-topo'), elMsg = document.getElementById('pl-msg');
+    var elProg = document.getElementById('pl-prog'), elTempo = document.getElementById('pl-tempo');
+    var btnAssistir = document.getElementById('btn-assistir');
+    var btnTrailer = document.getElementById('btn-trailer');
+    var btnVoltar = document.getElementById('btn-voltar');
 
-    var yt = null, pronto = false, pendente = null, aberto = false;
-    var filmeOrigem = null, scrollSalvo = 0, timerOculta = null, ehPlaylist = false;
+    var nivel = 0;                       // 0 galeria, 1 tela do filme, 2 player
+    var yt = null, pronto = false, pendente = null, ehPlaylist = false;
+    var filmeAtual = null, scrollSalvo = 0, timerOculta = null, ultimoBtn = btnAssistir;
 
     /* ---------- utilidades ---------- */
 
     function slugDe(filme) {
         var a = filme.querySelector('a');
         if (!a) return '';
-        var h = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
-        var fim = h.split('/').pop();
-        try { fim = decodeURIComponent(fim); } catch (e) {}
-        return fim;
+        var h = (a.getAttribute('href') || '').split('?')[0].split('#')[0].split('/').pop();
+        try { h = decodeURIComponent(h); } catch (e) {}
+        return h;
     }
 
-    function idDe(filme) {
-        return filme.getAttribute('data-yt') || IDS_YOUTUBE[slugDe(filme)] || '';
+    // Aceita ID puro, link completo do YouTube ou ID com "?si=..."
+    function limparId(s) {
+        if (!s) return '';
+        var m = s.match(/[?&]list=([\w-]+)/);
+        if (m) return m[1];
+        m = s.match(/(?:youtu\.be\/|[?&]v=|embed\/)([\w-]{11})/);
+        if (m) return m[1];
+        return s.split(/[?&#]/)[0].replace(/^\s+|\s+$/g, '');
+    }
+
+    function dadosDe(filme) {
+        var v = CATALOGO[slugDe(filme)];
+        if (typeof v === 'string') v = { filme: v };
+        v = v || {};
+        return { filme: limparId(v.filme), trailer: limparId(v.trailer), sinopse: v.sinopse || '' };
     }
 
     function fmt(s) {
         s = Math.floor(s || 0);
-        var m = Math.floor(s / 60), r = s % 60;
-        return m + ':' + (r < 10 ? '0' : '') + r;
+        var r = s % 60;
+        return Math.floor(s / 60) + ':' + (r < 10 ? '0' : '') + r;
     }
 
-    /* ---------- preparar capas ---------- */
+    function voltar() { history.back(); }
+
+    function focarFilme(filme) {
+        if (!filme) return;
+        filme.focus({ preventScroll: true });
+        var r = filme.getBoundingClientRect();
+        var alvo = window.pageYOffset + r.top - (window.innerHeight - r.height) / 2;
+        window.scrollTo(0, Math.max(0, alvo));
+    }
+
+    /* ---------- capas ---------- */
 
     filmes.forEach(function (filme, i) {
         filme.setAttribute('tabindex', '0');
@@ -838,15 +924,13 @@ body {
             link.setAttribute('tabindex', '-1');
             link.removeAttribute('target');
             link.addEventListener('click', function (e) {
-                var id = idDe(filme);
-                if (id) { e.preventDefault(); e.stopPropagation(); abrir(filme, id); }
+                var d = dadosDe(filme);
+                if (d.filme || d.trailer) { e.preventDefault(); e.stopPropagation(); abrirDetalhe(filme); }
             });
         }
-        // Magic Remote (ponteiro): passar o cursor também move o foco
         filme.addEventListener('mouseenter', function () {
-            if (!aberto && document.activeElement !== filme) filme.focus({ preventScroll: true });
+            if (nivel === 0 && document.activeElement !== filme) filme.focus({ preventScroll: true });
         });
-        // Clique: na TV abre direto; no celular, primeiro mostra as informações
         filme.addEventListener('click', function (e) {
             if (e.target.closest('a')) return;
             var toque = window.matchMedia && window.matchMedia('(hover: none)').matches;
@@ -854,25 +938,45 @@ body {
                 filmes.forEach(function (f) { if (f !== filme) f.classList.remove('ativo'); });
                 filme.classList.toggle('ativo');
             } else {
-                activate(filme);
+                ativar(filme);
             }
         });
     });
 
-    function activate(filme) {
-        var id = idDe(filme);
-        if (id) { abrir(filme, id); return; }
+    function ativar(filme) {
+        var d = dadosDe(filme);
+        if (d.filme || d.trailer) { abrirDetalhe(filme); return; }
         var a = filme.querySelector('a');
         if (a) window.location.href = a.href;
     }
 
-    function focarFilme(filme) {
-        if (!filme) return;
-        filme.focus({ preventScroll: true });
-        var r = filme.getBoundingClientRect();
-        var alvo = window.pageYOffset + r.top - (window.innerHeight - r.height) / 2;
-        window.scrollTo(0, Math.max(0, alvo));
+    /* ---------- tela do filme ---------- */
+
+    function abrirDetalhe(filme) {
+        var d = dadosDe(filme);
+        filmeAtual = filme;
+        scrollSalvo = window.pageYOffset;
+        var h3 = filme.querySelector('h3'), p = filme.querySelector('.informacoes p'), img = filme.querySelector('img');
+        document.getElementById('det-capa').src = img ? img.src : '';
+        document.getElementById('det-tit').textContent = h3 ? h3.textContent.trim() : '';
+        document.getElementById('det-meta').textContent = p ? p.textContent.trim() : '';
+        document.getElementById('det-sin').textContent = d.sinopse || '';
+        btnAssistir.style.display = d.filme ? 'block' : 'none';
+        btnTrailer.style.display = d.trailer ? 'block' : 'none';
+        detalhe.style.display = 'block';
+        nivel = 1;
+        history.pushState({ n: 1 }, '');
+        ultimoBtn = d.filme ? btnAssistir : btnTrailer;
+        ultimoBtn.focus();
     }
+
+    function botoesVisiveis() {
+        return [btnAssistir, btnTrailer, btnVoltar].filter(function (b) { return b.style.display !== 'none'; });
+    }
+
+    btnAssistir.addEventListener('click', function () { ultimoBtn = btnAssistir; abrirPlayer(dadosDe(filmeAtual).filme); });
+    btnTrailer.addEventListener('click', function () { ultimoBtn = btnTrailer; abrirPlayer(dadosDe(filmeAtual).trailer); });
+    btnVoltar.addEventListener('click', voltar);
 
     /* ---------- player do YouTube ---------- */
 
@@ -903,7 +1007,10 @@ body {
                     f.style.pointerEvents = 'none';
                     if (pendente) { tocar(pendente); pendente = null; }
                 },
-                onStateChange: function () { devolverFoco(); },
+                onStateChange: function (e) {
+                    devolverFoco();
+                    if (e.data === 0 && !ehPlaylist && nivel === 2) voltar(); // terminou: volta à tela do filme
+                },
                 onError: function () {
                     elMsg.textContent = 'Este vídeo não pode ser reproduzido aqui. Aperte Voltar.';
                     elMsg.style.display = 'block';
@@ -912,33 +1019,23 @@ body {
         });
     }
 
-    function abrir(filme, id) {
-        filmeOrigem = filme;
-        scrollSalvo = window.pageYOffset;
-        aberto = true;
-        var h3 = filme.querySelector('h3');
-        elTopo.textContent = h3 ? h3.textContent : '';
+    function abrirPlayer(id) {
+        if (!id) return;
+        var h3 = filmeAtual.querySelector('h3');
+        elTopo.textContent = h3 ? h3.textContent.trim() : '';
         elMsg.style.display = 'none';
         player.style.display = 'block';
+        nivel = 2;
+        history.pushState({ n: 2 }, '');
         player.focus();
         mostrar();
-
         if (pronto) { tocar(id); return; }
         pendente = id;
         if (!yt) carregarAPI(criarPlayer);
     }
 
-    function fechar() {
-        if (!aberto) return;
-        aberto = false;
-        try { if (pronto) yt.stopVideo(); } catch (e) {}
-        player.style.display = 'none';
-        window.scrollTo(0, scrollSalvo);
-        if (filmeOrigem) focarFilme(filmeOrigem);
-    }
-
     function devolverFoco() {
-        if (!aberto) return;
+        if (nivel !== 2) return;
         var a = document.activeElement;
         if (a && a.tagName === 'IFRAME') player.focus();
     }
@@ -949,18 +1046,11 @@ body {
         timerOculta = setTimeout(function () { player.classList.add('oculto'); }, 4000);
     }
 
-    function pular(seg) {
-        if (!pronto) return;
-        yt.seekTo(Math.max(0, yt.getCurrentTime() + seg), true);
-    }
-
-    function alternar() {
-        if (!pronto) return;
-        if (yt.getPlayerState() === 1) yt.pauseVideo(); else yt.playVideo();
-    }
+    function pular(seg) { if (pronto) yt.seekTo(Math.max(0, yt.getCurrentTime() + seg), true); }
+    function alternar() { if (pronto) { if (yt.getPlayerState() === 1) yt.pauseVideo(); else yt.playVideo(); } }
 
     setInterval(function () {
-        if (!aberto || !pronto) return;
+        if (nivel !== 2 || !pronto) return;
         devolverFoco();
         var d = yt.getDuration(), t = yt.getCurrentTime();
         if (d > 0) {
@@ -969,37 +1059,71 @@ body {
         }
     }, 500);
 
-    // Magic Remote: mexer o ponteiro mostra os controles; clicar pausa/retoma
     player.addEventListener('mousemove', mostrar);
     player.addEventListener('click', function () { alternar(); mostrar(); });
+
+    /* ---------- botão VOLTAR (histórico) ----------
+       Cada tela aberta cria uma entrada no histórico. O Voltar da TV
+       (ou history.back) dispara "popstate" e fecha só a tela de cima. */
+
+    window.addEventListener('popstate', function (e) {
+        var n = (e.state && e.state.n) || 0;
+        if (nivel === 2 && n < 2) {
+            try { if (pronto) yt.stopVideo(); } catch (err) {}
+            player.style.display = 'none';
+            nivel = 1;
+            ultimoBtn.focus();
+        }
+        if (nivel === 1 && n < 1) {
+            detalhe.style.display = 'none';
+            nivel = 0;
+            window.scrollTo(0, scrollSalvo);
+            focarFilme(filmeAtual);
+        }
+    });
 
     /* ---------- teclas do controle remoto ---------- */
 
     document.addEventListener('keydown', function (e) {
         var k = e.keyCode;
+        var eVoltar = (k === 461 || k === 27 || k === 8);
 
-        // ===== Com o player aberto =====
-        if (aberto) {
+        // ===== Player =====
+        if (nivel === 2) {
             var usada = true;
-            if (k === 13 || k === 179) { alternar(); }
+            if (k === 13 || k === 179) alternar();
             else if (k === 415) { if (pronto) yt.playVideo(); }
-            else if (k === 19)  { if (pronto) yt.pauseVideo(); }
-            else if (k === 37 || k === 412) { pular(-10); }
-            else if (k === 39 || k === 417) { pular(10); }
+            else if (k === 19) { if (pronto) yt.pauseVideo(); }
+            else if (k === 37 || k === 412) pular(-10);
+            else if (k === 39 || k === 417) pular(10);
             else if (k === 38) { if (ehPlaylist && pronto) yt.previousVideo(); }
             else if (k === 40) { if (ehPlaylist && pronto) yt.nextVideo(); }
-            else if (k === 461 || k === 27 || k === 8 || k === 413) { fechar(); }
-            else { usada = false; }
+            else if (eVoltar || k === 413) voltar();
+            else usada = false;
             if (usada) { e.preventDefault(); e.stopPropagation(); mostrar(); }
             return;
         }
 
-        // ===== Galeria =====
-        if (k === 461 || k === 27) {
-            e.preventDefault();
-            if (history.length > 1) history.back();
+        // ===== Tela do filme =====
+        if (nivel === 1) {
+            var bs = botoesVisiveis(), i = bs.indexOf(document.activeElement);
+            if (k === 38 || k === 40) {
+                e.preventDefault();
+                i = (i < 0) ? 0 : i + (k === 40 ? 1 : -1);
+                i = Math.max(0, Math.min(bs.length - 1, i));
+                bs[i].focus();
+            } else if (k === 13) {
+                e.preventDefault();
+                (i >= 0 ? bs[i] : bs[0]).click();
+            } else if (eVoltar) {
+                e.preventDefault();
+                voltar();
+            }
             return;
         }
+
+        // ===== Galeria =====
+        if (k === 461 || k === 27) { e.preventDefault(); if (history.length > 1) history.back(); return; }
 
         var dir = { 37: 'L', 38: 'U', 39: 'R', 40: 'D', 13: 'OK' }[k];
         if (!dir) return;
@@ -1007,10 +1131,7 @@ body {
         var ativo = document.activeElement;
         var atual = ativo && ativo.closest ? ativo.closest('.filme') : null;
 
-        if (dir === 'OK') {
-            if (atual) { e.preventDefault(); activate(atual); }
-            return;
-        }
+        if (dir === 'OK') { if (atual) { e.preventDefault(); ativar(atual); } return; }
 
         e.preventDefault();
         e.stopPropagation();
@@ -1023,8 +1144,7 @@ body {
         filmes.forEach(function (f) {
             if (f === atual) return;
             var r = f.getBoundingClientRect();
-            var dx = (r.left + r.width / 2) - cx;
-            var dy = (r.top + r.height / 2) - cy;
+            var dx = (r.left + r.width / 2) - cx, dy = (r.top + r.height / 2) - cy;
             var principal, lateral;
             if (dir === 'R') { principal = dx;  lateral = Math.abs(dy); }
             if (dir === 'L') { principal = -dx; lateral = Math.abs(dy); }
@@ -1043,7 +1163,6 @@ body {
 
 })();
 </script>
-
 </body>
 </html>
 
