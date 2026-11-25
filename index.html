@@ -1,3 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+html, body {
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+}
+
+body {
+    min-height: 100vh;
+}
+
+body {
+    background-color: black;
+    background-image: url('https://github.com/user-attachments/assets/eaa095b1-f15a-4dbb-8841-91726c118f56');
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat-y;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* GALERIA: CINCO FILMES POR LINHA */
+
+.galeria {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    gap: 14px;
+}
+
+.titulo-secao {
+    max-width: 1200px;
+    margin: 65px auto 25px;
+    color: white;
+    text-align: left;
+}
+
+.titulo-secao h2 {
+    font-size: 25px;
+    margin: 0 0 10px;
+    color: #ffffff;
+}
+
+.titulo-secao p {
+    font-size: 15px;
+    margin: 0;
+    color: #cccccc;
+}
+
+.filme {
+    position: relative;
+    width: 100%;
+    /* Fallback de proporção para navegadores de Smart TV mais antigos */
+    height: 0;
+    padding-bottom: 133.333%;
+    transition: transform .2s;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.filme img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: solid yellow 1px;
+    box-sizing: border-box;
+    display: block;
+}
+
+.filme .informacoes {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 9px 9px;
+    box-sizing: border-box;
+    color: white;
+    background: linear-gradient(transparent, rgba(0,0,0,0.97));
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.filme h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+}
+
+.filme p {
+    font-size: 11px;
+    line-height: 1.3;
+    margin: 0 0 9px;
+}
+
+.filme a {
+    display: inline-block;
+    background: #e50914;
+    color: white;
+    padding: 7px 8px;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+.galeria:hover .filme:not(:hover) {
+    opacity: 0.45;
+}
+
+.filme:hover {
+    transform: scale(1.06);
+    z-index: 10;
+}
+
+.filme:hover .informacoes {
+    opacity: 1;
+}
+
+/* TABLETS */
+
+@media (max-width: 900px) {
+    .galeria {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .filme h3 {
+        font-size: 15px;
+    }
+}
+
+/* CELULARES */
+
+@media (max-width: 550px) {
+    body {
+        padding: 10px;
+    }
+
+    .galeria {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .filme h3 {
+        font-size: 14px;
+    }
+
+    .filme p {
+        font-size: 10px;
+    }
+}
+/* INTERAÇÃO EM TELAS TOUCH */
+@media (hover: none) {
+
+    .galeria:hover .filme:not(:hover) {
+        opacity: 1;
+    }
+
+    .filme:hover {
+        transform: none;
+    }
+
+    .filme .informacoes {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .filme.ativo {
+        transform: scale(1.03);
+        z-index: 10;
+    }
+
+    .filme.ativo .informacoes {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+html {
+    overflow-y: auto !important;
+}
+
+body {
+    height: auto !important;
+    min-height: 100vh;
+    overflow: visible !important;
+}
+
+.galeria {
+    overflow: visible;
+}
+
+.filme {
+    min-height: 0;
+}
+
+/* NAVEGAÇÃO POR CONTROLE REMOTO - SMART TV */
+
+.filme:focus {
+    outline: 3px solid #e50914;
+    outline-offset: 3px;
+    transform: scale(1.06);
+    z-index: 20;
+}
+
+.filme:focus .informacoes {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .filme:focus {
+        transform: scale(1.03);
+    }
+}
+
+
+
+/* Aprimoramento progressivo: navegadores modernos podem usar aspect-ratio.
+   TVs antigas continuam usando o fallback com padding-bottom acima. */
+@supports (aspect-ratio: 3 / 4) {
+    .filme {
+        height: auto;
+        padding-bottom: 0;
+        aspect-ratio: 3 / 4;
+    }
+
+    .filme img {
+        position: absolute;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+
+<div class="titulo-secao">
+    <h2>NOSSOS FILMES</h2>
+    <p>Conheça nossas produções.</p>
+</div>
+
+<div class="galeria">
+
+    <!-- FILME 1 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/cfa72598-d5dd-4fdd-9afe-1fcbececc405" alt="Filme 1" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>100 Metros</h3>
+            <p>Ficção | Brasil | 20min | Português / 2026.</p>
+            <a href="https://www.bomjardimproducoes.com/100-metros" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 2 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/d543f7c1-53b1-4632-a61d-ea58b2df3b17" alt="Filme 2" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A Garotinha</h3>
+            <p>Ficção | Brasil | 32min | Português / Drama, Suspense / 2018. Classificação: 14 anos</p>
+            <a href="https://www.bomjardimproducoes.com/bjplay-a-garotinha" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 3 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/c7912445-7606-4c15-be03-fcb64a4dcac1" alt="Filme 3" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Dendi – O mal está online</h3>
+            <p>Ficção | Brasil | 21min | Português / Terror / 2021. Classificação: 16 anos</p>
+            <a href="https://www.bomjardimproducoes.com/dendi" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 4 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/62da20cd-9148-48ee-82c2-16fa53f11183" alt="Filme 4" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Os Maluvidos</h3>
+            <p>Ficção | Comédia infantil | 73min | Português / ano 2023. Classificação Livre</p>
+            <a href="https://www.bomjardimproducoes.com/bjplay-maluvidos" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 5 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/9f3c8005-99cd-408c-97d2-1e6a5f71a1ff" alt="Filme 5" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>É o tipo da coisa</h3>
+            <p>Ficção | Comédia romântica | 28min | Português / ano 2020. Classificação Livre</p>
+            <a href="https://www.bomjardimproducoes.com/é-o-tipo-da-coisa" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 6 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/047d18cf-4cd7-4cf5-bc43-a73aeaa9de93" alt="Filme 6" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>WebNovela A lei da Atração</h3>
+            <p>Ficção | Comédia romântica | 10 capítulos | Português | ano 2025. Classificação Livre</p>
+            <a href="https://www.bomjardimproducoes.com/webnovela" target="_blank">CONHEÇA A NOVELA</a>
+        </div>
+    </div>
+
+    <!-- FILME 7 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/4ec1f616-1176-48c0-9f77-d524bc62e037" alt="Filme 7" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Botija</h3>
+            <p>Ficção | Comédia, suspense | 64min | Português | ano 2015. Classificação Livre</p>
+            <a href="https://www.bomjardimproducoes.com/botija" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 8 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/452839ce-4767-49ca-9b63-03890cbe89c1" alt="Filme 8" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Nosso Território Tem História – Rio Siqueira</h3>
+            <p>Documentário | 15min | Português | ano 2023. Classificação Livre</p>
+            <a href="https://www.bomjardimproducoes.com/rio-siqueira" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 9 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/89f7ad4c-f38a-4213-90a5-18e86aae76d4" alt="Filme 9" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Nosso Território Tem História – Mulheres de Fibra</h3>
+            <p>Documentário | 20min | Português | ano 2021. Classificação Livre</p>
+            <a href="https://www.bomjardimproducoes.com/mulheres" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 10 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/9e176ad1-8896-4570-a9be-53b6456fde51" alt="Filme 10" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>O inferno é aqui</h3>
+            <p> Ficção | Terror | 35min | Português / ano 2008. Classificação: 16 anos </p>
+            <a href="https://www.bomjardimproducoes.com/o-inferno-é-aqui" target="_blank">SAIBA MAIS</a>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="titulo-secao">
+    <h2>WEB NOVELA A LEI DA ATRAÇÃO</h2>
+    <p>Conheça nossas produções audiovisuais para web.</p>
+</div>
+
+<div class="galeria">
+
+<!-- FILME 1 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/6d4016a7-e19e-49c4-bdcf-389f20f386e9" alt="Filme 1" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A lei da Atração – Capítulo 1</h3>
+            <p>Série| Brasil | 13min | Português / 2025 – Classificação Livre.</p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração" target="_blank">ASSISTA A NOVELA</a>
+        </div>
+    </div>
+
+    <!-- FILME 2 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/a8eddc78-be0a-4b73-9835-03d7d6d9957d" alt="Filme 2" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 2</h3>
+            <p> Série| Brasil | 18min | Português / 2025 – Classificação livre</p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-2" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 3 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/33abe2ff-f3db-41d8-8942-e61193126db3" alt="Filme 3" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 3</h3>
+            <p> Série| Brasil | 18min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-3" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 4 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/bfbeec1d-16dd-4901-8b67-0f12375f0db2" alt="Filme 4" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 4</h3>
+            <p> Série| Brasil | 17min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-4" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 5 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/613a1e20-d1d9-4363-b313-9255e1814c80" alt="Filme 5" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 5</h3>
+            <p> Série| Brasil | 16min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-5" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 6 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/fe6a19cd-05b8-4f28-b62e-dc9c335a0795" alt="Filme 6" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 6</h3>
+            <p> Série| Brasil | 17min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-6" target="_blank">CONHEÇA A NOVELA</a>
+        </div>
+    </div>
+
+    <!-- FILME 7 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/a1feb7a5-8b5c-42cc-a06a-0d84a346a251" alt="Filme 7" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 7</h3>
+            <p> Série| Brasil | 17min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-7" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 8 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/1df7bb10-65ee-431a-9d81-9bfe15007b61" alt="Filme 8" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 8</h3>
+            <p> Série| Brasil | 26min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-8" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 9 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/0f45da37-8e8e-4266-adb1-28ecbe40ea8b" alt="Filme 9" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 9</h3>
+            <p> Série| Brasil | 21min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-9" target="_blank">CONHEÇA O FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 10 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/069b483f-45ea-4195-8854-bbd5f160450e" alt="Filme 10" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3> A lei da Atração – Capítulo 10</h3>
+            <p> Série| Brasil | 40min | Português / 2025 – Classificação livre </p>
+            <a href="https://www.bomjardimproducoes.com/a-lei-da-atração-capitulo-10" target="_blank">ASSISTA A SÉRIE</a>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="titulo-secao">
+    <h2>HISTÓRIAS ASSOMBROSAS QUE MINHA MÃE CONTAVA</h2>
+    <p>Conheça nossas produções audiovisuais para web.</p>
+</div>
+
+<div class="galeria">
+
+
+<!-- FILME 1 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/25aa4240-42b7-4024-bedd-f364d9f81474" alt="Filme 1" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A marca do diabo</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/a-marca-do-diabo" target="_blank"> ASSISTA AO EPISÓDIO </a>
+        </div>
+    </div>
+
+   <!-- FILME 2 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/1c491fa6-6686-4daa-ab67-e2fa30e23513" alt="Filme 2" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>O Hospital</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/o-hospital" target="_blank"> ASSISTA AO EPISÓDIO </a>
+        </div>
+    </div>
+
+<!-- FILME 3 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/0bdde245-bc28-4496-a3d3-d761ba251f9a" alt="Filme 3" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Zé padeiro</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/zé-padeiro" target="_blank"> ASSISTA AO EPISÓDIO </a>
+        </div>
+    </div>
+
+    <!-- FILME 4 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/af35887c-b360-4446-87e6-eed5765406c9" alt="Filme 4" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>As 9 almas</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/as-nove-almas" target="_blank"> ASSISTA AO EPISÓDIO </a>
+        </div>
+    </div>
+
+
+    <!-- FILME 5 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/fe8a28fb-0c35-4394-9a07-2469fc99e260" alt="Filme 4" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Caçada maldita</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/caçada-maldita" target="_blank">ASSISTA AO EPISÓDIO</a>
+        </div>
+    </div>
+
+
+   <!-- FILME 6 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/05a59939-5e2c-4981-9f6e-b806371e667a" alt="Filme 6" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A mulher de azul</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/a-mulher-de-azul" target="_blank"> ASSISTA AO EPISÓDIO </a>
+        </div>
+    </div>
+
+<!-- FILME 7 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/0563a680-31fe-41e5-9b8d-555cf4ba25d4" alt="Filme 7" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>No vale da morte</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/no-vale-da-morte" target="_blank"> ASSISTA AO EPISÓDIO </a>
+        </div>
+    </div>
+
+
+<!-- FILME 8-->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/7721596e-575b-46fa-bb04-1562316df5ad" alt="Filme 8" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Os urubus</h3>
+            <p>Websérie | 8 episódios | Português | ano 2025. Classificação: 10 anos</p>
+            <a href="https://www.bomjardimproducoes.com/os-urubus" target="_blank"> ASSISTA AO EPISÓDIO </a>
+        </div>
+    </div>
+
+</div>
+
+<div class="titulo-secao">
+    <h2>PROGRAMA CINERGIA</h2>
+    <p>Mergulhe no mundo do cinema.</p>
+</div>
+
+<div class="galeria">
+
+    <!-- FILME 1 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/58a7d0b6-6cd6-46c0-b946-b224eebb7e3e" alt="Filme 1" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A história do som no cinema</h3>
+            <p>Programa / Episódio 7 - 2022.</p>
+            <a href="https://www.bomjardimproducoes.com/o-som-no-cinema" target="_blank">ASSISTA AO PROGRAMA</a>
+        </div>
+    </div>
+
+    <!-- FILME 2 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/c1550bc5-f4da-4a89-a27d-a15721cc21dc" alt="Filme 2" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>O cinema como Linguagem Narrativa</h3>
+            <p> Programa / Episódio 6 - 2022</p>
+            <a href="https://www.bomjardimproducoes.com/o-cinema-como-linguagem-narrativa" target="_blank"> ASSISTA AO PROGRAMA </a>
+        </div>
+    </div>
+
+    <!-- FILME 3 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/3665d376-5ddc-4e72-aa9d-958ee590420b" alt="Filme 3" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Filmes inspirados em quadros famosos</h3>
+            <p> Programa / Episódio 5 - 2022</p>
+            <a href="https://www.bomjardimproducoes.com/filmes-inspirados-em-quadros-famosos" target="_blank"> ASSISTA AO PROGRAMA </a>
+        </div>
+    </div>
+
+    <!-- FILME 4 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/13cc5935-96d7-4262-9900-f65a690f8cfd" alt="Filme 4" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A origem dos filmes de terror</h3>
+            <p> Programa / Episódio 4 - 2021</p>
+            <a href="https://www.bomjardimproducoes.com/a-origem-dos-filmes-de-terror" target="_blank"> ASSISTA AO PROGRAMA </a>
+        </div>
+    </div>
+
+    <!-- FILME 5 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/e56fd773-ee4c-4d60-90d5-abba51397eee" alt="Filme 5" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Os primeiros efeitos especiais</h3>
+            <p> Programa / Episódio 3 - 2021</p>
+            <a href="https://www.bomjardimproducoes.com/os-primeiros-efeitos-especiais" target="_blank"> ASSISTA AO PROGRAMA </a>
+        </div>
+    </div>
+
+    <!-- FILME 6 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/de5d18c4-525b-4255-aa5a-e4fe4ce4bdc5" alt="Filme 6" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A mulher no cinema</h3>
+            <p> Programa / Episódio 2 - 2021</p>
+            <a href="https://www.bomjardimproducoes.com/a-mulher-no-cinema" target="_blank"> ASSISTA AO PROGRAMA </a>
+        </div>
+    </div>
+
+    <!-- FILME 7 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/8d21c82c-56b5-4551-943d-6224fabba176" alt="Filme 7" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>A história do cinema</h3>
+            <p> Programa / Episódio 1 - 2021</p>
+            <a href="https://www.bomjardimproducoes.com/a-história-do-cinema" target="_blank"> ASSISTA AO PROGRAMA </a>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="titulo-secao">
+    <h2>FILMES PRODUZIDOS POR NOSSOS ALUNOS</h2>
+    <p>Escola de audiovisual Itinerante nas perifferias.</p>
+</div>
+
+<div class="galeria">
+
+    <!-- FILME 1 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/844a9bb1-ffe4-416b-a7cb-5b5ccbc4af4b" alt="Filme 1" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>O quarto proibido</h3>
+            <p>Ficção | Terror | 20min | 2025 | Classificação 14 anos</p>
+            <a href="https://www.bomjardimproducoes.com/o-quarto-proibido" target="_blank">ASSISTA AO FILME</a>
+        </div>
+    </div>
+
+    <!-- FILME 2 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/137a27ba-3630-4c61-9e5c-621de4b199a5" alt="Filme 2" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Nicolau</h3>
+            <p> Ficção | Drama | 20min | 2025 | Classificação: Livre </p>
+            <a href="https://www.bomjardimproducoes.com/nicolau" target="_blank"> ASSISTA AO FILME </a>
+        </div>
+    </div>
+
+    <!-- FILME 3 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/cbc1d019-0cd2-4a97-bd67-62bfb390a27d" alt="Filme 3" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Perto das 3</h3>
+            <p> Ficção | Terror | 15min | 2024 | Classificação: 14 anos </p>
+            <a href="https://www.bomjardimproducoes.com/perto-das-três" target="_blank"> ASSISTA AO FILME </a>
+        </div>
+    </div>
+
+    <!-- FILME 4 -->
+    <div class="filme">
+        <img src="https://github.com/user-attachments/assets/517cd225-5227-4e59-98d9-173f12cb48ce" alt="Filme 4" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>Estihaços</h3>
+            <p> Ficção | Terror | 24min | 2024 | Classificação: 14 anos </p>
+            <a href="https://www.bomjardimproducoes.com/estilhaços" target="_blank"> ASSISTA AO FILME </a>
+        </div>
+    </div>
+
+    <!-- FILME 5 -->
+<div class="filme">
+        <img src="https://github.com/user-attachments/assets/fb1bec27-9f59-40e2-9a1c-6bda0573a8b9" alt="Filme 1" loading="eager" decoding="async" referrerpolicy="no-referrer">
+        <div class="informacoes">
+            <h3>O quarto proibido</h3>
+            <p>Com Audiodescrição</p>
+            <a href="https://www.bomjardimproducoes.com/cópia-de-o-quarto-proibido" target="_blank">ASSISTA AO FILME</a>
+        </div>
+    </div>
+
+    
+    <!--
+    PARA ADICIONAR UM NOVO FILME:
+    Copie o bloco de um filme, cole abaixo do último
+    e substitua imagem, título, sinopse e endereço.
+    -->
+
+</div>
+
+
+
+
 <style>
 /* ---------- TELA DO FILME ---------- */
 #detalhe{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9000;
@@ -423,6 +1135,9 @@
 
 })();
 </script>
+</body>
+</html>
+
 
 
 
