@@ -922,11 +922,311 @@ body { height: auto !important; overflow: visible !important; }
 })();
 </script>
 
+<!-- ============================================================
+  CABEÇALHO BJPLAY  -  barra com marca e menu + destaque de um filme
+  COMO USAR: cole este bloco inteiro no seu index.html, logo
+  DEPOIS do </script> grande e ANTES de </body>. Não apague nada.
+  Para trocar o filme em destaque, mude só a linha "slug" abaixo.
+============================================================ -->
+
+<style>
+/* ---------- BASE ---------- */
+body{padding-top:0}
+#bj-barra,#bj-hero{margin-left:-15px;margin-right:-15px}
+@media(max-width:550px){#bj-barra,#bj-hero{margin-left:-10px;margin-right:-10px}}
+
+/* ---------- BARRA ---------- */
+#bj-barra{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;padding:12px 24px;
+  background:rgba(0,0,0,.92);border-bottom:1px solid #2a2a2a;font-family:Arial,Helvetica,sans-serif}
+#bj-marca{background:none;border:0;padding:0;cursor:pointer;text-align:left;color:#e50914;font:800 26px Arial,sans-serif;letter-spacing:1px;white-space:nowrap}
+#bj-marca small{display:block;font-size:10px;font-weight:400;letter-spacing:2px;color:#c9c9c9;margin-top:-2px}
+#bj-logo{display:block;width:auto;max-width:60vw}
+#bj-menu{display:flex;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none}
+#bj-menu::-webkit-scrollbar{display:none}
+.bj-mb{background:none;border:2px solid transparent;color:#c9c9c9;font:14px Arial,sans-serif;padding:8px 12px;border-radius:4px;cursor:pointer;white-space:nowrap}
+.bj-mb:hover,.bj-mb:focus{color:#fff;background:#222;outline:none}
+.bj-mb:focus{border-color:#ffd400}
+#bj-redes{display:flex;gap:8px}
+#bj-redes a{color:#fff;text-decoration:none;font:bold 12px Arial,sans-serif;border:1px solid #555;border-radius:20px;padding:7px 12px}
+#bj-redes a:hover{border-color:#e50914;background:#e50914}
+
+/* ---------- DESTAQUE ---------- */
+#bj-hero{position:relative;min-height:56vh;display:flex;align-items:center;justify-content:space-between;gap:40px;
+  padding:48px 7%;overflow:hidden;background:#000;font-family:Arial,Helvetica,sans-serif;color:#fff}
+#bj-fundo{position:absolute;top:-10%;left:-10%;width:120%;height:120%;object-fit:cover;filter:blur(22px) brightness(.4) saturate(1.2)}
+#bj-hero::before{content:"";position:absolute;top:0;left:0;right:0;bottom:0;z-index:1;
+  background:linear-gradient(90deg,#000 20%,rgba(0,0,0,.35) 100%)}
+#bj-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;z-index:1;background:linear-gradient(transparent,#000)}
+#bj-txt{position:relative;z-index:2;max-width:640px}
+#bj-selo{display:inline-block;color:#ffd400;border:1px solid #ffd400;font-size:11px;letter-spacing:2px;padding:4px 10px;margin-bottom:16px}
+#bj-tit{font-size:clamp(30px,5vw,52px);line-height:1.08;margin:0 0 12px}
+#bj-meta{font-size:14px;color:#c9c9c9;margin:0 0 14px}
+#bj-sin{font-size:clamp(15px,1.8vw,19px);line-height:1.5;color:#e2e2e2;margin:0 0 24px;max-height:7.5em;overflow:hidden}
+#bj-btns{display:flex;gap:12px;flex-wrap:wrap}
+.bj-b{font:bold 16px Arial,sans-serif;padding:14px 26px;border-radius:5px;border:3px solid transparent;cursor:pointer;color:#fff;background:#333}
+.bj-b.p{background:#e50914}
+.bj-b:hover,.bj-b:focus{border-color:#fff;outline:none}
+#bj-hero.bj-banner{justify-content:flex-start}
+#bj-hero.bj-banner #bj-fundo{top:0;left:0;width:100%;height:100%;filter:none}
+#bj-hero.bj-banner::before{background:linear-gradient(90deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.4) 45%,rgba(0,0,0,0) 100%)}
+#bj-hero.bj-banner #bj-poster{display:none}
+#bj-poster{position:relative;z-index:2;height:44vh;max-height:420px;width:auto;flex:none;border:2px solid #ffd400;border-radius:4px;box-shadow:0 10px 40px rgba(0,0,0,.7)}
+@media(max-width:550px){#bj-logo{max-height:38px}}
+@media(max-width:700px){#bj-poster{display:none}#bj-hero{padding:34px 20px}#bj-barra{padding:10px 12px;gap:10px}#bj-marca{font-size:21px}#bj-redes{display:none}}
+
+/* ---------- MODO TV (letras e botões maiores) ---------- */
+.bj-tv #bj-barra{position:relative;padding:20px 5%}
+.bj-tv #bj-marca{font-size:38px}
+.bj-tv .bj-mb{font-size:24px;padding:12px 20px}
+.bj-tv #bj-redes{display:none}
+.bj-tv #bj-hero{min-height:46vh;padding:40px 5%}
+.bj-tv #bj-selo{font-size:16px}
+.bj-tv #bj-tit{font-size:56px}
+.bj-tv #bj-meta{font-size:22px}
+.bj-tv #bj-sin{font-size:24px}
+.bj-tv .bj-b{font-size:26px;padding:18px 34px}
+</style>
+
+<script>
+/* Se algo der errado, aparece uma faixa vermelha no topo com o motivo. Pode apagar este bloco depois dos testes. */
+window.addEventListener('error', function (e) {
+    try {
+        var m = document.createElement('div');
+        m.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#b00020;color:#fff;font:15px Arial,sans-serif;padding:10px 14px';
+        m.textContent = 'Erro na página: ' + (e.message || 'desconhecido') + (e.lineno ? '  (linha ' + e.lineno + ')' : '');
+        document.body.appendChild(m);
+    } catch (x) {}
+});
+</script>
+
+<script>
+(function () {
+    if (document.getElementById('bj-barra')) return;   // evita cabeçalho duplicado se o bloco for colado duas vezes
+
+    /* ------------------------------------------------------------
+       CONFIGURAÇÃO
+       slug    = final do link da capa do filme em destaque
+       sinopse = texto que aparece no destaque
+       trailer = true se esse filme tem trailer no CATALOGO
+       imagem  = imagem larga (16:9) que fica de fundo; vazio = usa a capa
+       posicao = parte da imagem que fica visível ao cortar
+       LOGO    = imagem da logo na barra (src vazio = só texto "BJPlay")
+       REDES   = endereços das redes (deixe '' para não mostrar)
+    ------------------------------------------------------------ */
+    var DESTAQUE = {
+        slug: 'bjplay-maluvidos',
+        selo: 'EM DESTAQUE',
+        sinopse: '',                       // escreva a sinopse entre as aspas (vazio = não aparece)
+        trailer: false,                    // true se esse filme tem trailer no CATALOGO
+        imagem: 'https://github.com/user-attachments/assets/625075bd-7e24-4f1f-a822-6724ba4375f7',   // imagem larga do filme (link ou nome do arquivo)
+        posicao: 'center 30%'              // enquadramento: 'center', 'center top', 'right center', '70% 30%'...
+    };
+    var LOGO = {
+        src: 'https://github.com/user-attachments/assets/231f1fc9-e43f-4cc0-bd06-400da2beac1e',
+        altura: 56,          // altura da logo na barra (em pixels; na TV fica 40% maior)
+        fundoPreto: false    // true = a logo tem fundo preto e ele deve "sumir" na barra
+    };
+    var REDES = { 'YouTube': '', 'Instagram': '', 'TikTok': '' };
+
+    var ROTULOS = [
+        ['NOSSOS FILMES', 'Filmes'], ['WEB NOVELA', 'Web novela'],
+        ['HISTÓRIAS ASSOMBROSAS', 'Histórias Assombrosas'],
+        ['PROGRAMA CINERGIA', 'Cinergia'], ['FILMES PRODUZIDOS', 'Alunos']
+    ];
+
+    /* ---------- modo TV ---------- */
+    var ehTV = /web0s|webos|smarttv|tizen|netcast|hbbtv|googletv|appletv/i.test(navigator.userAgent) || /[?&]tv=1/.test(location.search);
+    if (ehTV) document.documentElement.className += ' bj-tv';
+
+    var filmes = Array.prototype.slice.call(document.querySelectorAll('.filme'));
+    var detalhe = document.getElementById('detalhe');
+    var player = document.getElementById('player');
+
+    function slugDe(f) {
+        var a = f.querySelector('a');
+        if (!a) return '';
+        var h = (a.getAttribute('href') || '').split('?')[0].split('#')[0].split('/').pop();
+        try { h = decodeURIComponent(h); } catch (e) {}
+        return h.normalize ? h.normalize('NFC') : h;
+    }
+
+    function el(tag, id, cls, html) {
+        var e = document.createElement(tag);
+        if (id) e.id = id;
+        if (cls) e.className = cls;
+        if (html !== undefined) e.innerHTML = html;
+        return e;
+    }
+
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+    /* ---------- barra ---------- */
+    var barra = el('header', 'bj-barra');
+    var marca = el('button', 'bj-marca', '', 'BJPlay<small>BOM JARDIM PRODUÇÕES</small>');
+    marca.type = 'button';
+    if (LOGO && LOGO.src) {
+        var textoMarca = marca.innerHTML;
+        var logo = document.createElement('img');
+        logo.id = 'bj-logo';
+        logo.alt = 'BJPlay – Bom Jardim Produções';
+        logo.setAttribute('referrerpolicy', 'no-referrer');
+        logo.style.height = Math.round(LOGO.altura * (ehTV ? 1.4 : 1)) + 'px';
+        if (LOGO.fundoPreto) logo.style.mixBlendMode = 'screen';
+        logo.onerror = function () { marca.innerHTML = textoMarca; };   // se não carregar, volta o texto
+        logo.src = LOGO.src;
+        marca.innerHTML = '';
+        marca.appendChild(logo);
+    }
+    var menu = el('nav', 'bj-menu');
+    var menuBtns = [];
+
+    Array.prototype.forEach.call(document.querySelectorAll('.titulo-secao'), function (sec) {
+        var h2 = sec.querySelector('h2');
+        if (!h2) return;
+        var texto = h2.textContent.trim(), rotulo = null;
+        ROTULOS.forEach(function (r) { if (!rotulo && texto.toUpperCase().indexOf(r[0]) === 0) rotulo = r[1]; });
+        if (!rotulo) rotulo = texto.charAt(0) + texto.slice(1).toLowerCase();
+        var b = el('button', '', 'bj-mb', esc(rotulo));
+        b.type = 'button';
+        b.addEventListener('click', function () {
+            irParaSecao(sec);
+        });
+        menu.appendChild(b);
+        menuBtns.push(b);
+    });
+
+    var redes = el('div', 'bj-redes');
+    for (var nome in REDES) {
+        if (REDES.hasOwnProperty(nome) && REDES[nome]) {
+            var a = el('a', '', '', esc(nome));
+            a.href = REDES[nome]; a.target = '_blank';
+            redes.appendChild(a);
+        }
+    }
+    barra.appendChild(marca); barra.appendChild(menu); barra.appendChild(redes);
+
+    /* ---------- destaque ---------- */
+    var capaDest = null;
+    filmes.forEach(function (f) { if (!capaDest && slugDe(f) === DESTAQUE.slug) capaDest = f; });
+
+    var hero = null, heroBtns = [];
+    if (capaDest) {
+        var h3 = capaDest.querySelector('h3'), p = capaDest.querySelector('.informacoes p'), img = capaDest.querySelector('img');
+        hero = el('section', 'bj-hero');
+        var fundo = el('img', 'bj-fundo'); fundo.alt = ''; fundo.setAttribute('referrerpolicy', 'no-referrer');
+        if (DESTAQUE.imagem) {
+            hero.className = 'bj-banner';
+            fundo.style.objectPosition = DESTAQUE.posicao || 'center';
+            fundo.onerror = function () {              // se a imagem não carregar, volta para a capa desfocada
+                fundo.onerror = null; hero.className = ''; fundo.style.objectPosition = ''; fundo.src = img.src;
+            };
+            fundo.src = DESTAQUE.imagem;
+        } else {
+            fundo.src = img.src;
+        }
+        var txt = el('div', 'bj-txt',
+            '', '<span id="bj-selo">' + esc(DESTAQUE.selo) + '</span>' +
+            '<h1 id="bj-tit">' + esc(h3.textContent.trim()) + '</h1>' +
+            '<p id="bj-meta">' + esc(p ? p.textContent.trim() : '') + '</p>' +
+            (DESTAQUE.sinopse ? '<p id="bj-sin">' + esc(DESTAQUE.sinopse) + '</p>' : ''));
+        var btns = el('div', 'bj-btns');
+        var botao = function (rotulo, cls, acao) {
+            var b = el('button', '', 'bj-b' + (cls ? ' ' + cls : ''), rotulo);
+            b.type = 'button';
+            b.addEventListener('click', acao);
+            btns.appendChild(b); heroBtns.push(b);
+        };
+        botao('▶&nbsp; Assistir', 'p', function () { abrirDoDestaque('assistir'); });
+        if (DESTAQUE.trailer) botao('🎬&nbsp; Trailer', '', function () { abrirDoDestaque('trailer'); });
+        botao('ⓘ&nbsp; Detalhes', '', function () { abrirDoDestaque('detalhes'); });
+        txt.appendChild(btns);
+        var poster = el('img', 'bj-poster'); poster.alt = h3.textContent.trim(); poster.src = img.src; poster.setAttribute('referrerpolicy', 'no-referrer');
+        hero.appendChild(fundo); hero.appendChild(txt); hero.appendChild(poster);
+    }
+
+    document.body.insertBefore(hero || document.createComment('sem destaque'), document.body.firstChild);
+    document.body.insertBefore(barra, document.body.firstChild);
+
+    /* ---------- ações ---------- */
+    var veioDoDestaque = false;
+
+    function abrirDoDestaque(modo) {
+        veioDoDestaque = true;
+        var link = capaDest.querySelector('a');
+        link.click();                                   // abre a tela do filme (usa o código já existente)
+        var bAss = document.getElementById('btn-assistir'), bTrl = document.getElementById('btn-trailer');
+        if (modo === 'assistir' && bAss && bAss.style.display !== 'none') bAss.click();
+        if (modo === 'trailer' && bTrl && bTrl.style.display !== 'none') bTrl.click();
+    }
+
+    function irParaCapa(f) {
+        f.focus({ preventScroll: true });
+        var r = f.getBoundingClientRect();
+        window.scrollTo(0, Math.max(0, window.pageYOffset + r.top - (window.innerHeight - r.height) / 2));
+    }
+
+    function irParaSecao(sec) {
+        var g = sec && sec.nextElementSibling, f = g && g.querySelector('.filme');
+        if (sec) window.scrollTo(0, Math.max(0, sec.getBoundingClientRect().top + window.pageYOffset - 90));
+        if (f) f.focus({ preventScroll: true });
+    }
+
+    function irParaTopo(b) {
+        window.scrollTo(0, 0);
+        if (b) b.focus({ preventScroll: true });
+    }
+
+    marca.addEventListener('click', function () { irParaTopo(heroBtns[0] || menuBtns[0]); });
+
+    // Ao voltar da tela do filme aberta pelo destaque, volta o foco para o destaque
+    window.addEventListener('popstate', function () {
+        if (veioDoDestaque && detalhe && detalhe.style.display === 'none') {
+            veioDoDestaque = false;
+            irParaTopo(heroBtns[0] || menuBtns[0]);
+        }
+    });
+
+    /* ---------- controle remoto no topo ----------
+       Roda ANTES do script das capas (fase de captura na janela). */
+    function aberto() {
+        return (detalhe && detalhe.style.display === 'block') || (player && player.style.display === 'block');
+    }
+
+    function primeiraFila(c) {
+        if (!c || !c.classList || !c.classList.contains('filme')) return false;
+        return Math.abs(c.getBoundingClientRect().top - filmes[0].getBoundingClientRect().top) < 10;
+    }
+
+    window.addEventListener('keydown', function (e) {
+        if (aberto()) return;
+        var k = e.keyCode, a = document.activeElement;
+        var noMenu = menuBtns.indexOf(a) >= 0, noHero = heroBtns.indexOf(a) >= 0;
+
+        if (noMenu || noHero) {
+            var lista = noMenu ? menuBtns : heroBtns, i = lista.indexOf(a);
+            if (k === 13) { a.click(); }
+            else if (k === 37) { lista[Math.max(0, i - 1)].focus({ preventScroll: true }); }
+            else if (k === 39) { lista[Math.min(lista.length - 1, i + 1)].focus({ preventScroll: true }); }
+            else if (k === 38) { if (noHero) irParaTopo(menuBtns[0]); }
+            else if (k === 40) { if (noMenu && heroBtns.length) irParaTopo(heroBtns[0]); else irParaSecao(document.querySelector('.titulo-secao')); }
+            else return;                                  // Voltar e outras teclas seguem para o script das capas
+            e.preventDefault(); e.stopPropagation();
+            return;
+        }
+
+        if (k === 38 && primeiraFila(a)) {               // ▲ na primeira fileira sobe para o destaque
+            e.preventDefault(); e.stopPropagation();
+            irParaTopo(heroBtns[0] || menuBtns[0]);
+        }
+    }, true);
+
+    // O script das capas rola a página até a 1ª capa ao carregar; aqui voltamos ao topo.
+    irParaTopo(heroBtns[0] || menuBtns[0]);
+
+})();
+</script>
+
+
+
 </body>
 </html>
-
-
-
-
-
-
